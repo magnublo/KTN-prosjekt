@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import SocketServer
+import time
+import datetime
 
 """
 Variables and functions that must be used by all the ClientHandler objects
@@ -46,7 +48,34 @@ class ClientHandler(SocketServer.BaseRequestHandler):
 
         }
 
-    def login()
+    def login(self)
+
+    def logout(self):
+
+    def msg(self):
+
+    def encode_response(self):
+
+        'timestamp' = self.get_timestamp,
+        'sender' = self.get_username,
+        'response' = self.get_response,
+        'content' = self.get_content
+
+
+
+
+
+    def names(self):
+
+    def help(self):
+
+
+    def timestamp(string time):
+        ts = time.time()
+
+        time  = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H-%M-%S')
+        print time
+
 
 
 class ThreadedTCPServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
