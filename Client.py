@@ -30,7 +30,7 @@ class Client():
         self.connection.disconnect()
 
     def receive_message(self, message):
-        text_message = self.myParser.parse(message)
+        print(self.myParser.parse(message))
 
     def send_payload(self, data):
         self.connection.send(data)
