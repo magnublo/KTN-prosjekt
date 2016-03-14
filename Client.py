@@ -3,7 +3,7 @@ import socket
 import json
 from MessageReceiver import MessageReceiver
 from MessageParser import MessageParser
-from Server import Server
+from Server import *
 
 class Client():
 
@@ -27,7 +27,7 @@ class Client():
         self.take_input()
         
     def disconnect(self):
-        self.connection.disconnect()
+        self.connection.close()
 
     def receive_message(self, message):
         print(self.myParser.parse(message))

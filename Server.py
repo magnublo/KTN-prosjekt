@@ -2,6 +2,7 @@
 import SocketServer
 import time
 import datetime
+import json
 
 """
 Variables and functions that must be used by all the ClientHandler objects
@@ -28,14 +29,15 @@ class ClientHandler(SocketServer.BaseRequestHandler):
         # Loop that listens for messages from the client
         while True:
             received_string = self.connection.recv(4096)
-
+            self.parseCode(received_string)
 
 
 
     def parseCode(self,json_object):
 
-        if json_object['request'] in self.possible_codes:
-            return self.possible_codes[json_object['request']](json_object)
+        dict = json.JSON_DECODER(json_object)
+        if dict['request'] in self.possible_codes:
+            return self.possible_codes[dict['request']](dict)
         else:
             return 'Error. JSON object sent from client has invalid format.'
 
@@ -50,26 +52,18 @@ class ClientHandler(SocketServer.BaseRequestHandler):
 
     def login(self)
 
-        if !ischar(username) || !isdigit(username):
-            print ("The username is not valid. You can only use characters of a-z or A-Z, or digits( 0-9).")
-            self.parse_error
-
-        else
-            print ("Login successful")
-            username =
-
     def logout(self):
 
     def msg(self):
 
-    def encode_response(self.msg()):
-        self.possible_responses = {
-        'timestamp' = get_timestamp,
-        'sender' = get_username,
-        'response' = get_response,
-        'content' = get_content
+    def encode_response(self):
 
-    }
+        'timestamp' = self.get_timestamp,
+        'sender' = self.get_username,
+        'response' = self.get_response,
+        'content' = self.get_content
+
+
 
 
 
@@ -78,14 +72,11 @@ class ClientHandler(SocketServer.BaseRequestHandler):
     def help(self):
 
 
-    def timestamp(self.encode_response(timestamp())):
+    def timestamp(string time):
         ts = time.time()
 
         time  = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H-%M-%S')
-        get_timestamp = time
-
-    def sender(self.encode_response(sender()))
-        get_username = login.username
+        print time
 
 
 
