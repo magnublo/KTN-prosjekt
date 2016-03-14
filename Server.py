@@ -80,19 +80,19 @@ class ClientHandler(SocketServer.BaseRequestHandler):
         else
             print ("Login successful")
             self.username = dict['content']
-
+            encode_response()
 
 
     def logout(self):
 
     def msg(self):
 
-    def encode_response(self.msg()):
+    def encode_response(sender, response, content):
         self.possible_responses = {
-        'timestamp' = get_timestamp,
-        'sender' = get_username,
-        'response' = get_response,
-        'content' = get_content
+        'timestamp':  <time>,
+        'sender':  self.username,
+        'response' : get_response,
+        'content' : get_content
 
     }
 
