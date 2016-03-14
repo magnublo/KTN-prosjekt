@@ -9,6 +9,17 @@ Variables and functions that must be used by all the ClientHandler objects
 must be written here (e.g. a dictionary for connected clients)
 """
 
+clientList = []
+
+def broadcast(dict):
+    pass
+    #Metode skal sende brukernavn og melding til alle i chatrommet.
+
+def listUsers():
+    pass
+    #Metode skal returnere liste over alle innlogga brukarar.
+
+
 class ClientHandler(SocketServer.BaseRequestHandler):
     """
     This is the ClientHandler class. Everytime a new client connects to the
@@ -16,8 +27,6 @@ class ClientHandler(SocketServer.BaseRequestHandler):
     only connected clients, and not the server itself. If you want to write
     logic for the server, you must write it outside this class
     """
-
-   clientList;
 
     def handle(self):
         """
