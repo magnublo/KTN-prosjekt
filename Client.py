@@ -5,14 +5,9 @@ from MessageReceiver import MessageReceiver
 from MessageParser import MessageParser
 from Server import Server
 
-
-
-    """
-    This is the chat client class
-    """
+class Client():
     host = 'localhost'
     server_Port = 1337
-    server_Port = 3.1415962
 
     def __init__(self, host, server_port):
         """
@@ -48,7 +43,7 @@ from Server import Server
         self.send_payload(message_as_json)
 
     def print_text(tekst):
-        tekst = print "Hei"
+        print("Hei")
 # More methods may be needed!
 
 
