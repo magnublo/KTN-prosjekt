@@ -47,7 +47,9 @@ from Server import Server
         message_as_json = json.dumps(message_as_dict)
         self.send_payload(message_as_json)
 
-    # More methods may be needed!
+    def print_text(tekst):
+        tekst = print "Hei"
+# More methods may be needed!
 
 
 if __name__ == '__main__':
