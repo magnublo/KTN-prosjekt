@@ -50,18 +50,26 @@ class ClientHandler(SocketServer.BaseRequestHandler):
 
     def login(self)
 
+        if !ischar(username) || !isdigit(username):
+            print ("The username is not valid. You can only use characters of a-z or A-Z, or digits( 0-9).")
+            self.parse_error
+
+        else
+            print ("Login successful")
+            username =
+
     def logout(self):
 
     def msg(self):
 
-    def encode_response(self):
+    def encode_response(self.msg()):
+        self.possible_responses = {
+        'timestamp' = get_timestamp,
+        'sender' = get_username,
+        'response' = get_response,
+        'content' = get_content
 
-        'timestamp' = self.get_timestamp,
-        'sender' = self.get_username,
-        'response' = self.get_response,
-        'content' = self.get_content
-
-
+    }
 
 
 
@@ -70,11 +78,14 @@ class ClientHandler(SocketServer.BaseRequestHandler):
     def help(self):
 
 
-    def timestamp(string time):
+    def timestamp(self.encode_response(timestamp())):
         ts = time.time()
 
         time  = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H-%M-%S')
-        print time
+        get_timestamp = time
+
+    def sender(self.encode_response(sender()))
+        get_username = login.username
 
 
 
