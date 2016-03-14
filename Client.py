@@ -12,7 +12,7 @@ from Server import Server
     """
     host = 'localhost'
     server_Port = 1337
-    server_Port = 2131232131232
+    server_Port = 3.1415962
 
     def __init__(self, host, server_port):
         """
