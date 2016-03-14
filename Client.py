@@ -6,13 +6,14 @@ from MessageParser import MessageParser
 from Server import Server
 
 class Client():
-    host = 'localhost'
-    server_Port = 1337
 
     def __init__(self, host, server_port):
         """
         This method is run when creating a new Client object
         """
+
+        self.host = 'localhost'
+        self.server_Port = 1337
 
         # Set up the socket connection to the server
         self.connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -22,14 +23,14 @@ class Client():
         self.run()
 
     def run(self):
-        self.connection.connect((self.host, self.server_port))
+        self.connection.connect((self.host, self.server_Port))
         self.take_input()
         
     def disconnect(self):
         self.connection.disconnect()
 
     def receive_message(self, message):
-        text_message = self.myParser.parse(message)
+        print(self.myParser.parse(message))
 
     def send_payload(self, data):
         self.connection.send(data)
