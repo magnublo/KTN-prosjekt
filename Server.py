@@ -17,6 +17,8 @@ class ClientHandler(SocketServer.BaseRequestHandler):
     logic for the server, you must write it outside this class
     """
 
+   clientList;
+
     def handle(self):
         """
         This method handles the connection between a client and the server.
@@ -24,6 +26,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
         self.ip = self.client_address[0]
         self.port = self.client_address[1]
         self.connection = self.request
+        clientList.add(self)
 
 
         # Loop that listens for messages from the client
@@ -36,21 +39,24 @@ class ClientHandler(SocketServer.BaseRequestHandler):
     def parseCode(self,json_object):
 
         dict = json.JSON_DECODER(json_object)
+
+        self.possible_codes = {
+            'login': self.parse_error(dict),
+            'logout': self.parse_info(dict),
+            'msg': self.parse_message(dict),
+            'names': self.parse_nicknames(dict),
+            'help': self.parse_simen(dict)
+        }
+
         if dict['request'] in self.possible_codes:
             return self.possible_codes[dict['request']](dict)
         else:
             return 'Error. JSON object sent from client has invalid format.'
 
-        self.possible_codes = {
-            'login': self.parse_error,
-            'logout': self.parse_info,
-            'msg': self.parse_message,
-            'names': self.parse_nicknames,
-            'help': self.parse_simen
 
-        }
 
-    def login(self)
+    def login(self,dict):
+       self.username = dict['content']
 
     def logout(self):
 
