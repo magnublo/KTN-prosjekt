@@ -40,9 +40,10 @@ class ClientHandler(SocketServer.BaseRequestHandler):
         self.possible_codes = {
             'login': self.parse_error,
             'logout': self.parse_info,
-            'msg':
-            'names':
-            'help':
+            'msg': self.parse_message,
+            'names': self.parse_nicknames,
+            'help': self.parse_simen
+
         }
 
     def login()
