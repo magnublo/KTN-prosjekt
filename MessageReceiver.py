@@ -13,6 +13,7 @@ class MessageReceiver(Thread):
         """
         This method is executed when creating a new MessageReceiver object
         """
+        super(MessageReceiver, self).__init__()
 
         self.myClient = client
         self.connection = connection
@@ -24,4 +25,4 @@ class MessageReceiver(Thread):
         # TODO: Finish initialization of MessageReceiver
 
     def run(self):
-        self.myClient.receiveMessage(self.connection.recv())
+        self.myClient.receive_message(self.connection.recv(1024))

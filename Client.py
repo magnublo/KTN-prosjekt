@@ -24,8 +24,8 @@ class Client():
         self.run()
 
     def run(self):
-        self.receiver = MessageReceiver(self, self.connection)
         self.connection.connect((self.host, self.server_Port))
+        self.receiver = MessageReceiver(self, self.connection)
         self.take_input()
         
     def disconnect(self):

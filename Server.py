@@ -14,8 +14,7 @@ users = []
 
 def broadcast(jobject):
     for c in clientList:
-        c.sendResponse(jobject)
-
+        c.send_response(jobject)
 
 def getUsers():
 
@@ -73,11 +72,11 @@ class ClientHandler(SocketServer.BaseRequestHandler):
     def parse_login(self, dict):
 
         if not dict['content'].ischar() or not dict['content'].isdigit():
-            self.sendResponse(self.encode_response('error',"The username is not valid. You can only use characters of a-z or A-Z, or digits( 0-9)."))
+            self.send_response(self.encode_response('error', "The username is not valid. You can only use characters of a-z or A-Z, or digits( 0-9)."))
 
         else:
-            self.sendResponse(self.encode_response('info',"Login successful."))
-            self.sendHistory()
+            self.send_response(self.encode_response('info', "Login successful."))
+            self.send_history()
             self.username = dict['content']
             users.append(dict['content'])
 
@@ -86,26 +85,24 @@ class ClientHandler(SocketServer.BaseRequestHandler):
         clientList.remove(self)
         users.remove(self.username)
         response = self.encode_response('info', "Logout successful.")
-        self.sendResponse(response)
+        self.send_response(response)
 
     def parse_msg(self, dict):
-        broadcast(self.encode_response('message',dict['content']))
-        messageHistory.append(json.dumps(dict))
+        messageJObject = self.encode_response('Message',self.username + ': ' + dict['content'])
+        broadcast(messageJObject)
+        messageHistory.append(messageJObject)
 
     def parse_names(self, dict):
-        self.sendResponse(self.encode_response('info', getUsers()))
+        self.send_response(self.encode_response('info', getUsers()))
 
     def parse_help(self, dict):
         supportedRequests = """Supported requests:
         login <username>, logout, msg <message>, names, help"""
-        self.sendResponse(self.encode_response('info', supportedRequests))
+        self.send_response(self.encode_response('info', supportedRequests))
 
-    def sendHistory(self):
-
-        historyString = ""
-
+    def send_history(self):
         for j in messageHistory:
-            historyString += json.load(j)[]
+            self.send_response(j)
 
 
     def encode_response(self, response, content):
@@ -118,7 +115,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
 
         return json.dumps(response)
 
-    def sendResponse(self, jobject):
+    def send_response(self, jobject):
         self.connection.send(jobject)
 
 
