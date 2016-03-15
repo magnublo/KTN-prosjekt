@@ -12,7 +12,7 @@ must be written here (e.g. a dictionary for connected clients)
 clientList = []
 users = []
 
-def broadcast(dict):
+def broadcast(jobject):
     pass
     #Metode skal sende brukernavn og melding til alle i chatrommet.
 
@@ -48,18 +48,18 @@ class ClientHandler(SocketServer.BaseRequestHandler):
 
     def parseCode(self,json_object):
 
-        dict = json.JSONDecoder(json_object)
+        dict = json.loads(json_object)
 
         self.possible_codes = {
             'login': self.parse_login(dict),
             'logout': self.parse_logout(dict),
-            'msg': self.parse_message(dict),
-            'names': self.parse_nicknames(dict),
-            'help': self.parse_simen(dict)
+            'msg': self.parse_msg(dict),
+            'names': self.parse_names(dict),
+            'help': self.parse_help(dict)
         }
 
         if dict['request'] in self.possible_codes:
-            return self.possible_codes[dict['request']](dict)
+            self.possible_codes[dict['request']](dict)
         else:
             self.encode_response('error',"Invalid user request.")
 
@@ -76,29 +76,31 @@ class ClientHandler(SocketServer.BaseRequestHandler):
 
 
     def parse_logout(self, dict):
+        clientList.remove(self)
+        users.remove(self.username)
+        response = self.encode_response('info', "Logout successful.")
+        self.send(response)
+
+    def parse_msg(self, dict):
+        broadcast(self.encode_respons)
+
+    def parse_names(self, dict):
         pass
 
-    def msg(self):
+    def parse_help(self, dict):
         pass
 
     def encode_response(self, response, content):
-        self.response = {
-        'timestamp': datetime.datetime.now().time(),
-        'sender': self.username,
-        'response': response,
-        'content': content
+        response = {
+            'timestamp': datetime.datetime.now().time(),
+            'sender': self.username,
+            'response': response,
+            'content': content
         }
 
-        return json.dumps(self.response)
+        return json.dumps(response)
 
-    def names(self):
-        pass
-
-    def help(self):
-        pass
-
-    def sender(self.encode_response(sender()))
-        get_username = login.username
+    def sendResponse(self, jobject):
 
 
 
