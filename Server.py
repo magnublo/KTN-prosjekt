@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import SocketServer
-import time
+import datetime
 import datetime
 import json
 
@@ -36,7 +36,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
         self.ip = self.client_address[0]
         self.port = self.client_address[1]
         self.connection = self.request
-        clientList.add(self)
+        clientList.append(self)
 
 
         # Loop that listens for messages from the client
@@ -51,8 +51,8 @@ class ClientHandler(SocketServer.BaseRequestHandler):
         dict = json.JSONDecoder(json_object)
 
         self.possible_codes = {
-            'login': self.parse_error(dict),
-            'logout': self.parse_info(dict),
+            'login': self.parse_login(dict),
+            'logout': self.parse_logout(dict),
             'msg': self.parse_message(dict),
             'names': self.parse_nicknames(dict),
             'help': self.parse_simen(dict)
@@ -61,57 +61,41 @@ class ClientHandler(SocketServer.BaseRequestHandler):
         if dict['request'] in self.possible_codes:
             return self.possible_codes[dict['request']](dict)
         else:
-            return 'Error. JSON object sent from client has invalid format.'
+            self.encode_response('error',"Invalid user request.")
 
-        self.possible_codes = {
-            'login': self.parse_error,
-            'logout': self.parse_info,
-            'msg': self.parse_message,
-            'names': self.parse_nicknames,
-            'help': self.parse_simen
 
-        }
-
-    def login(dict):
+    def parse_login(self, dict):
 
         if not dict['content'].ischar() or not dict['content'].isdigit():
-            print ("The username is not valid. You can only use characters of a-z or A-Z, or digits( 0-9).")
-            self.parse_error()
+            self.encode_response('error',"The username is not valid. You can only use characters of a-z or A-Z, or digits( 0-9).")
 
         else:
-            print ("Login successful")
+            self.encode_response('info',"Login successful.")
             self.username = dict['content']
-            encode_response()
+            users.add(dict['content'])
 
 
-    def logout(self):
+    def parse_logout(self, dict):
         pass
 
     def msg(self):
         pass
 
-    def encode_response(sender, response, content):
-        self.possible_responses = {
-        'timestamp':  <time>,
-        'sender':  self.username,
-        'response' : get_response,
-        'content' : get_content
-    }
+    def encode_response(self, response, content):
+        self.response = {
+        'timestamp': datetime.datetime.now().time(),
+        'sender': self.username,
+        'response': response,
+        'content': content
+        }
 
-
+        return json.dumps(self.response)
 
     def names(self):
         pass
 
     def help(self):
         pass
-
-
-    def timestamp(self.encode_response(timestamp())):
-        ts = time.time()
-
-        time  = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H-%M-%S')
-        get_timestamp = time
 
     def sender(self.encode_response(sender()))
         get_username = login.username

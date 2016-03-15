@@ -38,7 +38,7 @@ class Client():
     def take_input(self):
         print "Give user input to the chat client."
         userinput = raw_input()
-        words = userinput.split()
+        words = userinput.split(' ', 1)
         message_as_dict = {'request': words[0], 'message': words[1]}
         message_as_json = json.dumps(message_as_dict)
         self.send_payload(message_as_json)
