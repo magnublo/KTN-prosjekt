@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import SocketServer
 import datetime
-import datetime
 import json
 
 """
@@ -13,13 +12,19 @@ clientList = []
 users = []
 
 def broadcast(jobject):
-    pass
-    #Metode skal sende brukernavn og melding til alle i chatrommet.
+    for c in clientList:
+        c.sendResponse(jobject)
 
-def listUsers():
-    pass
-    #Metode skal returnere liste over alle innlogga brukarar.
 
+def getUsers():
+
+    stringWithUsers = ""
+
+    for u in users:
+        stringWithUsers += " "
+        stringWithUsers += u
+
+    return stringWithUsers
 
 class ClientHandler(SocketServer.BaseRequestHandler):
     """
@@ -33,6 +38,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
         """
         This method handles the connection between a client and the server.
         """
+        self.messageHistory = []
         self.ip = self.client_address[0]
         self.port = self.client_address[1]
         self.connection = self.request
@@ -50,7 +56,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
 
         dict = json.loads(json_object)
 
-        self.possible_codes = {
+        possible_codes = {
             'login': self.parse_login(dict),
             'logout': self.parse_logout(dict),
             'msg': self.parse_msg(dict),
@@ -58,8 +64,8 @@ class ClientHandler(SocketServer.BaseRequestHandler):
             'help': self.parse_help(dict)
         }
 
-        if dict['request'] in self.possible_codes:
-            self.possible_codes[dict['request']](dict)
+        if dict['request'] in possible_codes:
+            possible_codes[dict['request']](dict)
         else:
             self.encode_response('error',"Invalid user request.")
 
@@ -67,28 +73,32 @@ class ClientHandler(SocketServer.BaseRequestHandler):
     def parse_login(self, dict):
 
         if not dict['content'].ischar() or not dict['content'].isdigit():
-            self.encode_response('error',"The username is not valid. You can only use characters of a-z or A-Z, or digits( 0-9).")
+            self.sendResponse(self.encode_response('error',"The username is not valid. You can only use characters of a-z or A-Z, or digits( 0-9)."))
 
         else:
-            self.encode_response('info',"Login successful.")
+            self.sendResponse(self.encode_response('info',"Login successful."))
             self.username = dict['content']
-            users.add(dict['content'])
+            users.append(dict['content'])
 
 
     def parse_logout(self, dict):
         clientList.remove(self)
         users.remove(self.username)
         response = self.encode_response('info', "Logout successful.")
-        self.send(response)
+        self.sendResponse(response)
 
     def parse_msg(self, dict):
-        broadcast(self.encode_respons)
+        broadcast(self.encode_response('message',dict['content']))
+        self.messageHistory.append(json.dumps(dict))
 
     def parse_names(self, dict):
-        pass
+        self.sendResponse(self.encode_response('info', getUsers()))
 
     def parse_help(self, dict):
-        pass
+        supportedRequests = """Supported requests:
+        login <username>, logout, msg <message>, names, help"""
+        self.sendResponse(self.encode_response('info', supportedRequests))
+
 
     def encode_response(self, response, content):
         response = {
@@ -101,6 +111,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
         return json.dumps(response)
 
     def sendResponse(self, jobject):
+        self.connection.send(jobject)
 
 
 

@@ -17,12 +17,14 @@ class Client():
 
         # Set up the socket connection to the server
         self.connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.receiver = None
         self.myParser = MessageParser()
 
         # TODO: Finish init process with necessary code
         self.run()
 
     def run(self):
+        self.receiver = MessageReceiver(self, self.connection)
         self.connection.connect((self.host, self.server_Port))
         self.take_input()
         

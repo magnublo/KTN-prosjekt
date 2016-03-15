@@ -12,7 +12,7 @@ class MessageParser():
         }
 
     def parse(self, payload):
-        payload = json.JSONDecoder(payload)
+        payload = json.loads(payload)
 
         if payload['response'] in self.possible_responses:
             return self.possible_responses[payload['response']](payload)
@@ -20,13 +20,13 @@ class MessageParser():
             return 'Error. JSON object from server has invalid format.'
 
     def parse_error(self, payload):
-        return "Error fra server: " + payload.split()[2]
+        return "Error fra server: " + payload.split(' ', 1)[2]
 
     def parse_info(self, payload):
-        return "Info fra server: " + payload.split()[2]
+        return "Info fra server: " + payload.split(' ', 1)[2]
 
     def parse_message(self, payload):
-        return payload.split()[2]
+        return payload.split(' ', 1)[2]
 
     def parse_history(selfself, payload):
         pass
