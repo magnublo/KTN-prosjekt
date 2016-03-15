@@ -14,8 +14,6 @@ class MessageReceiver(Thread):
         This method is executed when creating a new MessageReceiver object
         """
 
-        super(MessageReceiver,self).__init__
-
         self.myClient = client
         self.connection = connection
 

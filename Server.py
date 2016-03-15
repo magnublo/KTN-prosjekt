@@ -10,6 +10,7 @@ must be written here (e.g. a dictionary for connected clients)
 """
 
 clientList = []
+users = []
 
 def broadcast(dict):
     pass
@@ -47,7 +48,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
 
     def parseCode(self,json_object):
 
-        dict = json.JSON_DECODER(json_object)
+        dict = json.JSONDecoder(json_object)
 
         self.possible_codes = {
             'login': self.parse_error(dict),
@@ -71,21 +72,23 @@ class ClientHandler(SocketServer.BaseRequestHandler):
 
         }
 
-    def login(self.username)
+    def login(dict):
 
-        if not nickname.ischar() or not nickname.isdigit():
+        if not dict['content'].ischar() or not dict['content'].isdigit():
             print ("The username is not valid. You can only use characters of a-z or A-Z, or digits( 0-9).")
-            self.parse_error
+            self.parse_error()
 
-        else
+        else:
             print ("Login successful")
             self.username = dict['content']
             encode_response()
 
 
     def logout(self):
+        pass
 
     def msg(self):
+        pass
 
     def encode_response(sender, response, content):
         self.possible_responses = {
@@ -93,14 +96,15 @@ class ClientHandler(SocketServer.BaseRequestHandler):
         'sender':  self.username,
         'response' : get_response,
         'content' : get_content
-
     }
 
 
 
     def names(self):
+        pass
 
     def help(self):
+        pass
 
 
     def timestamp(self.encode_response(timestamp())):
