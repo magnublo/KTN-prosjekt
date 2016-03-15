@@ -8,6 +8,7 @@ Variables and functions that must be used by all the ClientHandler objects
 must be written here (e.g. a dictionary for connected clients)
 """
 
+messageHistory = []
 clientList = []
 users = []
 
@@ -38,7 +39,6 @@ class ClientHandler(SocketServer.BaseRequestHandler):
         """
         This method handles the connection between a client and the server.
         """
-        self.messageHistory = []
         self.ip = self.client_address[0]
         self.port = self.client_address[1]
         self.connection = self.request
@@ -77,6 +77,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
 
         else:
             self.sendResponse(self.encode_response('info',"Login successful."))
+            self.sendHistory()
             self.username = dict['content']
             users.append(dict['content'])
 
@@ -89,7 +90,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
 
     def parse_msg(self, dict):
         broadcast(self.encode_response('message',dict['content']))
-        self.messageHistory.append(json.dumps(dict))
+        messageHistory.append(json.dumps(dict))
 
     def parse_names(self, dict):
         self.sendResponse(self.encode_response('info', getUsers()))
@@ -98,6 +99,13 @@ class ClientHandler(SocketServer.BaseRequestHandler):
         supportedRequests = """Supported requests:
         login <username>, logout, msg <message>, names, help"""
         self.sendResponse(self.encode_response('info', supportedRequests))
+
+    def sendHistory(self):
+
+        historyString = ""
+
+        for j in messageHistory:
+            historyString += json.load(j)[]
 
 
     def encode_response(self, response, content):
