@@ -38,14 +38,16 @@ class ClientHandler(SocketServer.BaseRequestHandler):
         """
         This method handles the connection between a client and the server.
         """
+        self.username = None
         self.ip = self.client_address[0]
         self.port = self.client_address[1]
         self.connection = self.request
         clientList.append(self)
+        self.bool = True;
 
 
         # Loop that listens for messages from the client
-        while True:
+        while bool:
             received_string = self.connection.recv(4096)
             self.parseCode(received_string)
 
@@ -56,59 +58,74 @@ class ClientHandler(SocketServer.BaseRequestHandler):
         dict = json.loads(json_object)
 
         possible_codes = {
-            'login': self.parse_login(dict),
-            'logout': self.parse_logout(dict),
-            'msg': self.parse_msg(dict),
-            'names': self.parse_names(dict),
-            'help': self.parse_help(dict)
+            'login': self.parse_login,
+            'logout': self.parse_logout,
+            'msg': self.parse_msg,
+            'names': self.parse_names,
+            'help': self.parse_help
         }
 
         if dict['request'] in possible_codes:
             possible_codes[dict['request']](dict)
         else:
-            self.encode_response('error',"Invalid user request.")
+            self.encode_response('error',"Invalid user request.", 'Server')
 
 
     def parse_login(self, dict):
 
-        if not dict['content'].ischar() or not dict['content'].isdigit():
-            self.send_response(self.encode_response('error', "The username is not valid. You can only use characters of a-z or A-Z, or digits( 0-9)."))
+        if not self.validateName(dict['content']):
+            self.send_response(self.encode_response('error', "The username is not valid. You can only use characters of a-z or A-Z, or digits( 0-9).",'Server'))
 
         else:
-            self.send_response(self.encode_response('info', "Login successful."))
-            self.send_history()
             self.username = dict['content']
+            self.send_response(self.encode_response('info', "Login successful.",'Server'))
+            self.send_history()
             users.append(dict['content'])
 
 
     def parse_logout(self, dict):
         clientList.remove(self)
         users.remove(self.username)
-        response = self.encode_response('info', "Logout successful.")
+        self.username = None
+        response = self.encode_response('info', "Logout successful.", 'Server')
         self.send_response(response)
+        self.bool = False
 
     def parse_msg(self, dict):
-        messageJObject = self.encode_response('Message',self.username + ': ' + dict['content'])
-        broadcast(messageJObject)
-        messageHistory.append(messageJObject)
+        if self.username != None:
+            messageJObject = self.encode_response('message', self.username + ': ' + dict['content'], self.username)
+            broadcast(messageJObject)
+            messageHistory.append(messageJObject)
+        else:
+            response = self.encode_response('info', "Login first.", 'Server')
+            self.send_response(response)
 
     def parse_names(self, dict):
-        self.send_response(self.encode_response('info', getUsers()))
+        self.send_response(self.encode_response('info', getUsers(), 'Server'))
 
     def parse_help(self, dict):
         supportedRequests = """Supported requests:
         login <username>, logout, msg <message>, names, help"""
-        self.send_response(self.encode_response('info', supportedRequests))
+        self.send_response(self.encode_response('info', supportedRequests, 'Server'))
 
     def send_history(self):
         for j in messageHistory:
             self.send_response(j)
 
+    def validateName(self, name):
+        for letter in name:
+            if not letter.isalpha() and not letter.isdigit():
+                return False
 
-    def encode_response(self, response, content):
+        return True;
+
+
+    def encode_response(self, response, content, sender):
+        time = datetime.datetime.now().time()
+        timeString = str(time.hour) + ":" + str(time.minute)
         response = {
-            'timestamp': datetime.datetime.now().time(),
-            'sender': self.username,
+            'timestamp': timeString,
+            'sender': sender,
             'response': response,
             'content': content
         }

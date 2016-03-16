@@ -20,9 +20,11 @@ class MessageReceiver(Thread):
 
         # Flag to run thread as a deamon
         self.daemon = True
-        self.run()
+        self.start()
+       # self.run()
 
         # TODO: Finish initialization of MessageReceiver
 
     def run(self):
-        self.myClient.receive_message(self.connection.recv(1024))
+        while True:
+            self.myClient.receive_message(self.connection.recv(4096))

@@ -15,20 +15,20 @@ class MessageParser():
         payload = json.loads(payload)
 
         if payload['response'] in self.possible_responses:
-            return self.possible_responses[payload['response']](payload)
+            return self.possible_responses[payload['response']](payload['content'])
         else:
             return 'Error. JSON object from server has invalid format.'
 
-    def parse_error(self, payload):
-        return "Error fra server: " + payload.split(' ', 1)[2]
+    def parse_error(self, message):
+        return "Error fra server: " + message
 
-    def parse_info(self, payload):
-        return "Info fra server: " + payload.split(' ', 1)[2]
+    def parse_info(self, message):
+        return "Info fra server: " + message
 
-    def parse_message(self, payload):
-        return payload.split(' ', 1)[2]
+    def parse_message(self, message):
+        return message
 
-    def parse_history(selfself, payload):
+    def parse_history(selfself, message):
         pass
 
 
