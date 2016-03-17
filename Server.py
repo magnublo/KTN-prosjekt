@@ -42,12 +42,10 @@ class ClientHandler(SocketServer.BaseRequestHandler):
         self.ip = self.client_address[0]
         self.port = self.client_address[1]
         self.connection = self.request
-        clientList.append(self)
-        self.bool = True;
 
 
         # Loop that listens for messages from the client
-        while bool:
+        while True:
             received_string = self.connection.recv(4096)
             self.parseCode(received_string)
 
@@ -68,32 +66,38 @@ class ClientHandler(SocketServer.BaseRequestHandler):
         if dict['request'] in possible_codes:
             possible_codes[dict['request']](dict)
         else:
-            self.encode_response('error',"Invalid user request.", 'Server')
+            self.send_response(self.encode_response('error',"Invalid user request.", 'Server'))
 
 
     def parse_login(self, dict):
-
-        if not self.validateName(dict['content']):
+        if dict['content'] is None:
+            self.send_response(self.encode_response('error', "Specify username", 'Server'))
+        elif not self.validateName(dict['content']):
             self.send_response(self.encode_response('error', "The username is not valid. You can only use characters of a-z or A-Z, or digits( 0-9).",'Server'))
-
+        elif dict['content'] in users:
+            self.send_response(self.encode_response('error', "You are already logged in.",'Server'))
         else:
+            clientList.append(self)
             self.username = dict['content']
             self.send_response(self.encode_response('info', "Login successful.",'Server'))
-            self.send_history()
+            self.send_response(self.encode_response('history', messageHistory, 'Server'))
             users.append(dict['content'])
 
 
     def parse_logout(self, dict):
-        clientList.remove(self)
-        users.remove(self.username)
-        self.username = None
-        response = self.encode_response('info', "Logout successful.", 'Server')
-        self.send_response(response)
-        self.bool = False
+        if self.username != None:
+            clientList.remove(self)
+            users.remove(self.username)
+            self.username = None
+            response = self.encode_response('info', "Logout successful.", 'Server')
+            self.send_response(response)
+        else:
+            response = self.encode_response('info', "Login first.", 'Server')
+            self.send_response(response)
 
     def parse_msg(self, dict):
         if self.username != None:
-            messageJObject = self.encode_response('message', self.username + ': ' + dict['content'], self.username)
+            messageJObject = self.encode_response('message', dict['content'], self.username)
             broadcast(messageJObject)
             messageHistory.append(messageJObject)
         else:
@@ -101,16 +105,16 @@ class ClientHandler(SocketServer.BaseRequestHandler):
             self.send_response(response)
 
     def parse_names(self, dict):
-        self.send_response(self.encode_response('info', getUsers(), 'Server'))
+        if self.username != None:
+            self.send_response(self.encode_response('info', getUsers(), 'Server'))
+        else:
+            response = self.encode_response('info', "Login first.", 'Server')
+            self.send_response(response)
 
     def parse_help(self, dict):
         supportedRequests = """Supported requests:
         login <username>, logout, msg <message>, names, help"""
         self.send_response(self.encode_response('info', supportedRequests, 'Server'))
-
-    def send_history(self):
-        for j in messageHistory:
-            self.send_response(j)
 
     def validateName(self, name):
         for letter in name:
@@ -123,14 +127,14 @@ class ClientHandler(SocketServer.BaseRequestHandler):
     def encode_response(self, response, content, sender):
         time = datetime.datetime.now().time()
         timeString = str(time.hour) + ":" + str(time.minute)
-        response = {
+        encoded_msg = {
             'timestamp': timeString,
             'sender': sender,
             'response': response,
             'content': content
         }
 
-        return json.dumps(response)
+        return json.dumps(encoded_msg)
 
     def send_response(self, jobject):
         self.connection.send(jobject)
@@ -153,7 +157,7 @@ if __name__ == "__main__":
 
     No alterations are necessary
     """
-    HOST, PORT = 'localhost', 1337
+    HOST, PORT = '10.20.74.242', 1337
     print 'Server running...'
     # Set up and initiate the TCP server
 

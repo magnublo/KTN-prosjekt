@@ -15,21 +15,31 @@ class MessageParser():
         payload = json.loads(payload)
 
         if payload['response'] in self.possible_responses:
-            return self.possible_responses[payload['response']](payload['content'])
+            return self.possible_responses[payload['response']](payload)
         else:
             return 'Error. JSON object from server has invalid format.'
 
     def parse_error(self, message):
-        return "Error fra server: " + message
+        res = message['sender'] + " (error): " + message['content']
+        return res
 
     def parse_info(self, message):
-        return "Info fra server: " + message
+        res = message['sender'] + " (info): " + message['content']
+        return res
 
     def parse_message(self, message):
-        return message
+        res = message['sender'] + " (message): " + message['content']
+        return res
 
-    def parse_history(selfself, message):
-        pass
+    def parse_history(self, message):
+        res = ""
+        for j in message['content']:
+            d = json.loads(j)
+            if d['content'] != 'None':
+                res += self.parse_message(d)
+                res += "\n"
+
+        return res
 
 
     # Include more methods for handling the different responses...

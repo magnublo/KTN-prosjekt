@@ -12,8 +12,8 @@ class Client():
         This method is run when creating a new Client object
         """
 
-        self.host = 'localhost'
-        self.server_Port = 1337
+        self.host = '78.91.50.56'
+        self.server_Port = 9998
 
         # Set up the socket connection to the server
         self.connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -26,19 +26,21 @@ class Client():
     def run(self):
         self.connection.connect((self.host, self.server_Port))
         self.receiver = MessageReceiver(self, self.connection)
+        print "Give user input to the chat client."
         self.take_input()
         
     def disconnect(self):
         self.connection.close()
 
     def receive_message(self, message):
-        print(self.myParser.parse(message))
+        msg = (self.myParser.parse(message))
+        if msg is not None:
+            print msg
 
     def send_payload(self, data):
         self.connection.send(data)
 
     def take_input(self):
-        print "Give user input to the chat client."
         userinput = raw_input()
         words = userinput.split(' ', 1)
         if len(words) == 2:
