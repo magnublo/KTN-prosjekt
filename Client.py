@@ -28,9 +28,7 @@ class Client():
         self.receiver = MessageReceiver(self, self.connection)
         print "Give user input to the chat client."
         self.take_input()
-        
-    def disconnect(self):
-        self.connection.close()
+
 
     def receive_message(self, message):
         msg = (self.myParser.parse(message))
@@ -51,8 +49,6 @@ class Client():
         self.send_payload(message_as_json)
         self.take_input()
 
-    def print_text(tekst):
-        print("Hei")
 # More methods may be needed!
 
 

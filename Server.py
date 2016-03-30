@@ -49,8 +49,6 @@ class ClientHandler(SocketServer.BaseRequestHandler):
             received_string = self.connection.recv(4096)
             self.parseCode(received_string)
 
-
-
     def parseCode(self,json_object):
 
         dict = json.loads(json_object)
