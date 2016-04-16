@@ -12,8 +12,8 @@ class Client():
         This method is run when creating a new Client object
         """
 
-        self.host = '78.91.50.56'
-        self.server_Port = 9998
+        self.host = 'localhost'
+        self.server_Port = 1337
 
         # Set up the socket connection to the server
         self.connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
